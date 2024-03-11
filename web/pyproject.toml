@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "logistics"
+version = "0.1.0"
+description = ""
+authors = ["markdunn72 <markdunn2012@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0.3"
+django-environ = "^0.11.2"
+psycopg = "^3.1.18"
+graphene-django = "^3.2.0"
+django-filter = "^24.1"
+pytz = "^2024.1"
+requests = "^2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+django-extensions = "^3.2.3"
+ipython = "^8.22.2"
+factory-boy = "^3.3.0"
+pytest = "^8.1.1"
+pytest-django = "^4.8.0"
+black = "^24.2.0"
+flake8 = "^7.0.0"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "logistics.settings"

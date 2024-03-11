@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./web
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./web:/code
+    env_file:
+      - ./web/.env
+  db:
+    ports:
+      - "5432:5432"  # expose port to allow external DB client connection
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=logistics
+      - POSTGRES_USER=logistics_user
+      - POSTGRES_PASSWORD=logistics_password
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
