@@ -10,11 +10,11 @@ To run the application:
 
 To create test data:
 
-`docker compose exec web poetry run python manage.py test_data create --vehicles 10 --jobs 100`
+`docker compose exec web poetry run python manage.py fake_data create --vehicles 10 --jobs 100`
 
 To destroy test data:
 
-`docker compose exec web poetry run python manage.py test_data destroy`
+`docker compose exec web poetry run python manage.py fake_data destroy`
 
 To start an interactive shell in Django:
 

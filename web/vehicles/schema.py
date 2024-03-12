@@ -1,7 +1,7 @@
 import graphene
 from django.db import IntegrityError
 from django.db.models import Sum
-from django_filters import FilterSet
+from django_filters import FilterSet, OrderingFilter
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -13,6 +13,8 @@ class VehicleFilter(FilterSet):
     """Provides filtering options for DeliveryJob queries"""
 
     delivery_jobs = graphene.List("jobs.schema.DeliveryJobType")
+
+    order_by = OrderingFilter(fields=("total_income", "total_cost"))
 
     class Meta:
         model = Vehicle
@@ -42,21 +44,14 @@ class VehicleFilter(FilterSet):
 
 class VehicleType(DjangoObjectType):
     """Represents a Vehicle with its fields and relationships."""
+    total_income = graphene.Decimal()
+    total_cost = graphene.Decimal()
 
     class Meta:
         model = Vehicle
         interfaces = (graphene.relay.Node,)
         fields = "__all__"
         filterset_class = VehicleFilter
-
-    total_income = graphene.Decimal()
-    total_cost = graphene.Decimal()
-
-    def resolve_total_income(self, info):
-        return self.delivery_jobs.aggregate(Sum("income"))["income__sum"] or 0
-
-    def resolve_total_cost(self, info):
-        return self.delivery_jobs.aggregate(Sum("cost"))["cost__sum"] or 0
 
 
 class Query(graphene.ObjectType):
@@ -74,8 +69,12 @@ class Query(graphene.ObjectType):
         return Vehicle.objects.filter(registration=registration).first()
 
     def resolve_vehicles(self, info, **kwargs):
-        queryset = VehicleFilter(kwargs).qs.distinct("registration")
-        return queryset
+        queryset = VehicleFilter(kwargs).qs.annotate(
+            total_income=Sum("delivery_jobs__income"),
+            total_cost=Sum("delivery_jobs__cost"),
+        )
+
+        return queryset.distinct()
 
 
 class CreateVehicleInput(graphene.InputObjectType):

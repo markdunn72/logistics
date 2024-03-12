@@ -57,7 +57,7 @@ class DeliveryJobFilter(FilterSet):
         }
 
 
-class CountableConnection(Connection):
+class DeliveryJobConnection(Connection):
     """
     A paginated connection that includes a count of items on the current page.
     """
@@ -96,7 +96,7 @@ class DeliveryJobType(DjangoObjectType):
         interfaces = (graphene.relay.Node,)
         fields = "__all__"
         filterset_class = DeliveryJobFilter
-        connection_class = CountableConnection
+        connection_class = DeliveryJobConnection
 
 
 class Query(graphene.ObjectType):
